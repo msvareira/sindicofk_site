@@ -18,7 +18,7 @@ Site/
 ├── js/
 │   └── script.js          # JavaScript principal
 └── imagens/
-    └── logo.jpg           # Logo da empresa
+    └── logo.png           # Logo da empresa
 ```
 
 ---
