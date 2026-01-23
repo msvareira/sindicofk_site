@@ -177,8 +177,8 @@ ul {
    HEADER E NAVEGAÇÃO
    ============================================ */
 .header {
-    background: var(--color-white);
-    box-shadow: var(--shadow-sm);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    box-shadow: var(--shadow-md);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -200,7 +200,7 @@ ul {
     gap: 0.75rem;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--color-white);
 }
 
 .logo img {
@@ -218,13 +218,14 @@ ul {
 
 .nav-menu a {
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--color-white);
     position: relative;
+    opacity: 0.9;
 }
 
 .nav-menu a:not(.btn-nav):hover,
 .nav-menu a.active {
-    color: var(--color-primary);
+    opacity: 1;
 }
 
 .nav-menu a:not(.btn-nav)::after {
@@ -245,14 +246,17 @@ ul {
 
 .btn-nav {
     background: var(--color-secondary);
-    color: var(--color-white);
+    color: var(--color-primary-dark);
     padding: 0.625rem 1.5rem;
     border-radius: 8px;
     font-size: 0.95rem;
+    opacity: 1;
+    font-weight: 600;
 }
 
 .btn-nav:hover {
-    background: var(--color-secondary-dark);
+    background: var(--color-secondary-light);
+    color: var(--color-primary-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -270,7 +274,7 @@ ul {
 .mobile-menu-toggle span {
     width: 25px;
     height: 3px;
-    background: var(--color-primary);
+    background: var(--color-white);
     border-radius: 2px;
     transition: var(--transition);
 }
