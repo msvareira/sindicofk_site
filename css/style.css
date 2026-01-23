@@ -1297,6 +1297,14 @@ ul {
         padding: var(--spacing-sm) 0;
     }
     
+    .nav-menu a {
+        color: var(--color-primary);
+    }
+    
+    .nav-menu a:not(.btn-nav)::after {
+        background: var(--color-secondary);
+    }
+    
     .btn-nav {
         display: block;
         text-align: center;
