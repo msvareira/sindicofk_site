@@ -584,6 +584,124 @@ ul {
 }
 
 /* ============================================
+   AVALIAÇÕES GOOGLE
+   ============================================ */
+.reviews-section {
+    padding: var(--spacing-xl) 0;
+    background: var(--color-light-gray);
+}
+
+.reviews-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    background: var(--color-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+    cursor: pointer;
+    text-decoration: none;
+    border: 2px solid transparent;
+}
+
+.reviews-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--color-secondary);
+}
+
+.reviews-google-icon {
+    flex-shrink: 0;
+}
+
+.reviews-google-icon .fab.fa-google {
+    font-size: 4rem;
+    color: #4285F4;
+}
+
+.reviews-info {
+    flex: 1;
+}
+
+.reviews-stars {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.reviews-stars i {
+    color: #FBBC04;
+    font-size: 1.5rem;
+}
+
+.reviews-info h3 {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.reviews-info p {
+    color: var(--color-text-light);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.reviews-arrow {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    background: var(--color-secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.reviews-arrow i {
+    color: var(--color-white);
+    font-size: 1.5rem;
+}
+
+.reviews-card:hover .reviews-arrow {
+    background: var(--color-primary);
+    transform: scale(1.1);
+}
+
+.google-reviews-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-white);
+    border: 2px solid var(--color-secondary);
+    border-radius: 8px;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    transition: var(--transition);
+}
+
+.google-reviews-badge:hover {
+    background: var(--color-secondary);
+    color: var(--color-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.google-reviews-badge .fab.fa-google {
+    font-size: 1.25rem;
+    color: #4285F4;
+}
+
+.google-reviews-badge:hover .fab.fa-google {
+    color: var(--color-white);
+}
+
+/* ============================================
    WHATSAPP FLUTUANTE
    ============================================ */
 .whatsapp-float {
@@ -1211,6 +1329,16 @@ ul {
     .mvv-grid,
     .differentials-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .reviews-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .reviews-arrow {
+        transform: rotate(90deg);
     }
     
     .contact-wrapper {
