@@ -33,6 +33,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - mailpit
     restart: unless-stopped
     environment:
       - APP_ENV=local
@@ -45,8 +46,6 @@ services:
       - DB_PASSWORD=sindicofk_secret
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - MAIL_HOST=mailpit
-      - MAIL_PORT=1025
 
   # MySQL Database
   mysql:

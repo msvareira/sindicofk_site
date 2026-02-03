@@ -24,7 +24,7 @@ class LeadController extends Controller
             'email' => 'required|email|max:255',
             'telefone' => 'required|string|max:20',
             'condominio' => 'nullable|string|max:255',
-            'tipo_contato' => 'nullable|in:orcamento,duvida,informacao,reclamacao,outro',
+            'tipo_contato' => 'nullable|in:orcamento,duvida,informacao,reclamacao,outro,informacoes',
             'mensagem' => 'required|string',
         ], [
             'nome.required' => 'O nome é obrigatório',
