@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Models\Interacao;
+use App\Mail\NewLeadNotification;
+use App\Mail\LeadConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class LeadController extends Controller
 {
@@ -67,8 +71,30 @@ class LeadController extends Controller
                 'data_interacao' => now(),
             ]);
 
-            // TODO: Enviar email de notificação para administrador
-            // TODO: Enviar email de confirmação para o lead
+            // Enviar email de notificação para administrador
+            try {
+                $adminEmail = config('mail.admin_notification_email', env('ADMIN_NOTIFICATION_EMAIL'));
+                if ($adminEmail) {
+                    Mail::to($adminEmail)->send(new NewLeadNotification($lead));
+                    Log::info('Email de notificação enviado para administrador', ['lead_id' => $lead->id, 'email' => $adminEmail]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Erro ao enviar email de notificação', [
+                    'lead_id' => $lead->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
+            // Enviar email de confirmação para o lead
+            try {
+                Mail::to($lead->email)->send(new LeadConfirmation($lead));
+                Log::info('Email de confirmação enviado para lead', ['lead_id' => $lead->id, 'email' => $lead->email]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao enviar email de confirmação', [
+                    'lead_id' => $lead->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
 
             return response()->json([
                 'success' => true,

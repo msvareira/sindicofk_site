@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Frontend - Nginx servindo arquivos estáticos
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sindicofk-frontend
+    ports:
+      - "${FRONTEND_PORT:-81}:80"
+    networks:
+      - sindicofk-frontend-network
+    restart: unless-stopped
+    environment:
+      # URL da API Backend (ajustar conforme ambiente)
+      - BACKEND_API_URL=${BACKEND_API_URL:-http://localhost:8080/api}
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  sindicofk-frontend-network:
+    driver: bridge

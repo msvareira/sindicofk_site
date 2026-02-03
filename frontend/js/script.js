@@ -92,7 +92,7 @@ window.addEventListener('scroll', function() {
 // ============================================
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         // Obter dados do formulário
@@ -101,8 +101,9 @@ if (contactForm) {
             telefone: document.getElementById('telefone').value,
             email: document.getElementById('email').value,
             condominio: document.getElementById('condominio').value,
-            assunto: document.getElementById('assunto').value,
-            mensagem: document.getElementById('mensagem').value
+            tipo_contato: document.getElementById('assunto').value || 'orcamento',
+            mensagem: document.getElementById('mensagem').value,
+            page_url: window.location.href
         };
         
         // Validação básica
@@ -118,45 +119,68 @@ if (contactForm) {
             return;
         }
         
-        // Simular envio (em produção, integrar com backend)
+        // Desabilitar botão e mostrar loading
         const submitButton = contactForm.querySelector('button[type="submit"]');
         submitButton.disabled = true;
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
         
-        // Simular delay de envio
-        setTimeout(function() {
-            // Criar mensagem para WhatsApp como fallback
-            const whatsappMessage = `
-                *Nova Solicitação de Contato - Síndico FK*
+        try {
+            // Obter URL da API do config
+            const apiUrl = window.SindicoFKConfig ? 
+                window.SindicoFKConfig.getApiUrl() : 
+                'http://localhost:8080/api';
+            
+            // Enviar para API
+            const response = await fetch(`${apiUrl}/leads`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                // Sucesso
+                showFormMessage(
+                    `✅ ${result.message}<br><small>Protocolo: ${result.data.protocolo}</small>`, 
+                    'success'
+                );
                 
-                *Nome:* ${formData.nome}
-                *Telefone:* ${formData.telefone}
-                *E-mail:* ${formData.email}
-                *Condomínio:* ${formData.condominio || 'Não informado'}
-                *Assunto:* ${formData.assunto || 'Não especificado'}
+                // Limpar formulário
+                contactForm.reset();
                 
-                *Mensagem:*
-                ${formData.mensagem}
-            `.trim();
+                // Opcional: Scroll para o topo do formulário
+                contactForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+            } else {
+                // Erro de validação ou servidor
+                let errorMessage = 'Erro ao enviar mensagem. Por favor, tente novamente.';
+                
+                if (result.errors) {
+                    // Erros de validação
+                    const errors = Object.values(result.errors).flat();
+                    errorMessage = errors.join('<br>');
+                } else if (result.message) {
+                    errorMessage = result.message;
+                }
+                
+                showFormMessage(errorMessage, 'error');
+            }
             
-            // Exibir mensagem de sucesso
-            showFormMessage('Mensagem enviada com sucesso! Entraremos em contato em breve.', 'success');
-            
-            // Limpar formulário
-            contactForm.reset();
-            
+        } catch (error) {
+            console.error('Erro ao enviar formulário:', error);
+            showFormMessage(
+                'Erro de conexão. Por favor, verifique sua internet e tente novamente.', 
+                'error'
+            );
+        } finally {
             // Restaurar botão
             submitButton.disabled = false;
             submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Mensagem';
-            
-            // Opcional: redirecionar para WhatsApp após 2 segundos
-            // setTimeout(() => {
-            //     const whatsappUrl = `https://wa.me/5500000000000?text=${encodeURIComponent(whatsappMessage)}`;
-            //     window.open(whatsappUrl, '_blank');
-            // }, 2000);
-            
-            console.log('Dados do formulário:', formData);
-        }, 1500);
+        }
     });
 }
 
@@ -166,17 +190,18 @@ if (contactForm) {
 function showFormMessage(message, type) {
     const formMessage = document.getElementById('formMessage');
     if (formMessage) {
-        formMessage.textContent = message;
+        formMessage.innerHTML = message; // Usar innerHTML para suportar HTML
         formMessage.className = `form-message ${type}`;
         
         // Rolar até a mensagem
         formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
-        // Remover mensagem após 5 segundos
+        // Remover mensagem após 8 segundos para mensagens de sucesso
         if (type === 'success') {
             setTimeout(() => {
                 formMessage.className = 'form-message';
-            }, 5000);
+                formMessage.innerHTML = '';
+            }, 8000);
         }
     }
 }

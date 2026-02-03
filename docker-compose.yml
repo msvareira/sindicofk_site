@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # Frontend - Nginx servindo arquivos estáticos
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sindicofk-frontend
+    ports:
+      - "81:80"
+    networks:
+      - sindicofk-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+    environment:
+      - BACKEND_URL=http://localhost:8080
+
+  # Backend - Laravel API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sindicofk-backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/storage:/var/www/html/storage
+    networks:
+      - sindicofk-network
+    depends_on:
+      - mysql
+      - redis
+    restart: unless-stopped
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=sindicofk_crm
+      - DB_USERNAME=sindicofk
+      - DB_PASSWORD=sindicofk_secret
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MAIL_HOST=mailpit
+      - MAIL_PORT=1025
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: sindicofk-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - sindicofk-network
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: sindicofk_crm
+      MYSQL_USER: sindicofk
+      MYSQL_PASSWORD: sindicofk_secret
+      MYSQL_ROOT_PASSWORD: root_secret
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis Cache
+  redis:
+    image: redis:alpine
+    container_name: sindicofk-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - sindicofk-network
+    restart: unless-stopped
+
+  # Mailpit - Email Testing
+  mailpit:
+    image: axllent/mailpit
+    container_name: sindicofk-mailpit
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP
+    networks:
+      - sindicofk-network
+    restart: unless-stopped
+
+networks:
+  sindicofk-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
+  redis-data:
+    driver: local
