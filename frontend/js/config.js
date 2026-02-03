@@ -20,7 +20,7 @@ const SindicoFKConfig = {
         // return window.location.origin + '/api';
         
         // Opção 2: URL específica do backend
-        return 'https://api.sindicofk.com.br/api';
+        return 'http://191.252.60.176:8080/api';
     },
     
     // WhatsApp
