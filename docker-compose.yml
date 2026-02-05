@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Frontend - Nginx servindo arquivos estáticos
   frontend:

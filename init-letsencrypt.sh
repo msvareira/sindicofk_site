@@ -10,10 +10,11 @@ email="adm.sindicofk@gmail.com"
 staging=0  # Defina como 1 para modo de teste
 
 echo "=========================================="
-echo "Configurando HTTPS para Síndico FK"
+echo "🔒 Configurando HTTPS para Síndico FK"
 echo "=========================================="
 echo "Domínios: ${domains[@]}"
 echo "Email: $email"
+echo "Modo Staging: $staging"
 echo ""
 
 # Verificar se está rodando como root ou com sudo
@@ -89,7 +90,6 @@ fi
 # Obter certificado
 echo ""
 echo "🔐 Solicitando certificado SSL do Let's Encrypt..."
-echo "Comando: docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot --email $email --agree-tos --no-eff-email $staging_arg $domain_args"
 echo ""
 
 docker compose run --rm certbot certonly \
@@ -98,6 +98,7 @@ docker compose run --rm certbot certonly \
     --email $email \
     --agree-tos \
     --no-eff-email \
+    --force-renewal \
     $staging_arg \
     $domain_args
 
