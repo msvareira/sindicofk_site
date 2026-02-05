@@ -144,7 +144,7 @@ sudo ss -tulpn | grep -E ':(80|443)'
 
 # 7. Se travar, execute direto:
 docker compose up -d frontend
-docker compose run --rm --entrypoint "" certbot certonly \
+docker compose run --rm --entrypoint certbot certbot certonly \
   --webroot \
   --webroot-path=/var/www/certbot \
   --email adm.sindicofk@gmail.com \

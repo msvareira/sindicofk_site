@@ -92,7 +92,7 @@ echo ""
 echo "🔐 Solicitando certificado SSL do Let's Encrypt..."
 echo ""
 
-docker compose run --rm --entrypoint "" certbot certonly \
+docker compose run --rm --entrypoint certbot certbot certonly \
     --webroot \
     --webroot-path=/var/www/certbot \
     --email $email \
