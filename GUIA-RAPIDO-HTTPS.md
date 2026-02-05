@@ -124,18 +124,34 @@ docker compose up -d
 
 ### Certificado não obtido
 ```bash
-# 1. Verificar DNS
-dig sindicofk.com.br
+# 1. Limpar certificados incompletos
+rm -rf certbot/conf/live certbot/conf/archive certbot/conf/renewal
 
-# 2. Verificar firewall
+# 2. Parar containers
+docker compose down
+
+# 3. Verificar DNS
+dig sindicofk.com.br +short
+
+# 4. Verificar firewall
 sudo ufw status
 
-# 3. Verificar logs
-docker compose logs certbot
+# 5. Verificar portas livres
+sudo ss -tulpn | grep -E ':(80|443)'
 
-# 4. Testar em modo staging
-# Editar init-letsencrypt.sh: staging=1
+# 6. Executar novamente
 ./init-letsencrypt.sh
+
+# 7. Se travar, execute direto:
+docker compose up -d frontend
+docker compose run --rm --entrypoint "" certbot certonly \
+  --webroot \
+  --webroot-path=/var/www/certbot \
+  --email adm.sindicofk@gmail.com \
+  --agree-tos \
+  --no-eff-email \
+  -d sindicofk.com.br \
+  -d www.sindicofk.com.br
 ```
 
 ## 📞 Suporte

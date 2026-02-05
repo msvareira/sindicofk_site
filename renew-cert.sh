@@ -16,7 +16,7 @@ fi
 
 # Renovar certificados
 echo "🔄 Renovando certificados..."
-docker compose run --rm certbot renew
+docker compose run --rm --entrypoint "" certbot renew
 
 if [ $? -eq 0 ]; then
     echo ""
