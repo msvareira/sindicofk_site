@@ -14,7 +14,7 @@ echo ""
 # 1. Criar diretórios
 echo "📁 Criando diretórios..."
 mkdir -p certbot/conf
-mkdir -p certbot/www
+mkdir -p certbot/www/.well-known/acme-challenge
 chmod -R 755 certbot/
 
 # 2. Backup do nginx.conf atual
@@ -39,6 +39,15 @@ sleep 10
 # 6. Testar se nginx está acessível
 echo "🔍 Testando acesso HTTP..."
 curl -I http://sindicofk.com.br || echo "⚠️  Site não acessível"
+
+# 6.1. Criar arquivo de teste
+echo "test123" > certbot/www/.well-known/acme-challenge/test.txt
+echo "🧪 Testando servir arquivos certbot..."
+curl http://sindicofk.com.br/.well-known/acme-challenge/test.txt
+
+# 6.2. Verificar dentro do container
+echo "🔍 Verificando dentro do container..."
+docker compose exec frontend ls -la /var/www/certbot/.well-known/acme-challenge/ || echo "⚠️  Diretório não encontrado no container"
 
 # 7. Obter certificado
 echo ""
