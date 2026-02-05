@@ -9,13 +9,28 @@ services:
     container_name: sindicofk-frontend
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     networks:
       - sindicofk-network
     depends_on:
       - backend
     restart: unless-stopped
     environment:
-      - BACKEND_URL=http://localhost:8080
+      - BACKEND_URL=http://backend:80
+
+  # Certbot para Let's Encrypt
+  certbot:
+    image: certbot/certbot
+    container_name: sindicofk-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - sindicofk-network
 
   # Backend - Laravel API
   backend:
