@@ -98,7 +98,6 @@ docker compose run --rm certbot certonly \
     --email $email \
     --agree-tos \
     --no-eff-email \
-    --force-renewal \
     $staging_arg \
     $domain_args
 
