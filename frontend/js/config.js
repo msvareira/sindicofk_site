@@ -10,17 +10,14 @@ const SindicoFKConfig = {
     // URLs da API
     getApiUrl() {
         // Em desenvolvimento, usar localhost:8080
-        // Em produção, usar a mesma origem ou URL específica
+        // Em produção, usar a mesma origem via proxy Nginx
         if (this.isDevelopment) {
             return 'http://localhost:8080/api';
         }
         
-        // Em produção, ajustar conforme necessário
-        // Opção 1: Mesma origem (se backend estiver no mesmo domínio)
-        // return window.location.origin + '/api';
-        
-        // Opção 2: URL específica do backend
-        return 'http://191.252.60.176:8080/api';
+        // Em produção, usar a mesma origem (Nginx faz proxy para backend)
+        // Isso garante HTTPS e evita problemas de CORS e Mixed Content
+        return window.location.origin + '/api';
     },
     
     // WhatsApp
