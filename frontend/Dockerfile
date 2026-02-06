@@ -11,12 +11,13 @@ RUN mkdir -p /var/www/certbot && \
 COPY . /usr/share/nginx/html
 
 # Copiar configuração customizada do nginx
-# Usa nginx-temp.conf se existir (alternar entre local/producao), senão usa nginx.conf
-COPY nginx*.conf /tmp/
-RUN if [ -f /tmp/nginx-temp.conf ]; then \
-        cp /tmp/nginx-temp.conf /etc/nginx/conf.d/default.conf; \
+# Prioridade: nginx-temp.conf (dev/local) > nginx.conf (produção padrão)
+RUN if [ -f /usr/share/nginx/html/nginx-temp.conf ]; then \
+        echo "Usando nginx-temp.conf (desenvolvimento)"; \
+        cp /usr/share/nginx/html/nginx-temp.conf /etc/nginx/conf.d/default.conf; \
     else \
-        cp /tmp/nginx.conf /etc/nginx/conf.d/default.conf; \
+        echo "Usando nginx.conf (produção)"; \
+        cp /usr/share/nginx/html/nginx.conf /etc/nginx/conf.d/default.conf; \
     fi
 
 # Expor portas 80 e 443

@@ -40,19 +40,25 @@ Para rodar no VPS **com HTTPS**:
 ### Opção 1: Usando o Script Automático (Recomendado)
 
 ```bash
-# Windows
-.\start-production.bat
+# No VPS (Linux)
+chmod +x deploy-vps.sh
+./deploy-vps.sh
 ```
 
 ### Opção 2: Comandos Manuais
 
 ```bash
-# 1. Restaurar configuração de produção
-copy frontend\nginx.conf frontend\nginx-temp.conf
+# No VPS:
+
+# 1. Garantir que não existe nginx-temp.conf
+rm -f frontend/nginx-temp.conf
 
 # 2. Reiniciar containers
 docker-compose down
 docker-compose up -d --build
+
+# 3. Verificar logs
+docker-compose logs -f frontend
 ```
 
 ### Acessar Produção:
@@ -192,9 +198,25 @@ docker-compose down -v
 ## 📝 Notas Importantes
 
 ⚠️ **Nunca commite** `nginx-temp.conf` no Git (arquivo temporário)  
-⚠️ **Sempre use** os scripts para alternar ambientes  
+⚠️ **No VPS**: Use `deploy-vps.sh` após `git pull`  
+⚠️ **Localmente**: Use `start-local.bat` para desenvolvimento  
 ⚠️ **Verifique** qual configuração está ativa antes de fazer deploy  
 ✅ **Teste** localmente antes de fazer push para produção
+
+### 🚨 Se o Site Parar no VPS
+
+Se após fazer deploy o site não funcionar no VPS:
+
+```bash
+# No VPS, execute:
+rm -f frontend/nginx-temp.conf
+docker-compose down
+docker-compose up -d --build
+```
+
+Ou use o script: `./deploy-vps.sh`
+
+Consulte [SOLUCAO-VPS.md](SOLUCAO-VPS.md) para troubleshooting completo.
 
 ---
 
