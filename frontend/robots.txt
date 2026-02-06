@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://sindicofk.com.br/sitemap.xml
+
+# Diretórios permitidos
+Allow: /css/
+Allow: /js/
+Allow: /imagens/
+
+# Performance - cache de recursos estáticos
+User-agent: *
+Crawl-delay: 1
