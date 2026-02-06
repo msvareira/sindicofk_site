@@ -36,6 +36,9 @@ tmp/
 temp/
 *.tmp
 
+# Nginx temporary config (usado para alternar entre dev/prod)
+frontend/nginx-temp.conf
+
 # Backup files
 *.backup
 *.bak

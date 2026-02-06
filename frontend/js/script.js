@@ -388,8 +388,146 @@ const debouncedScroll = debounce(function() {
 window.addEventListener('scroll', debouncedScroll);
 
 // ============================================
-// LOG DE DESENVOLVIMENTO
+// CAROUSEL DE IMAGENS
 // ============================================
-console.log('%c🏢 Síndico FK - Site Institucional', 'color: #0B5345; font-size: 18px; font-weight: bold;');
+document.addEventListener('DOMContentLoaded', function() {
+    const carouselWrapper = document.querySelector('.carousel-wrapper');
+    
+    if (!carouselWrapper) return; // Sai se não houver carousel na página
+    
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    const prevBtn = document.querySelector('.carousel-btn-prev');
+    const nextBtn = document.querySelector('.carousel-btn-next');
+    
+    let currentSlide = 0;
+    let autoPlayInterval;
+    const autoPlayDelay = 5000; // 5 segundos
+    
+    // Função para mostrar slide específico
+    function showSlide(index) {
+        // Garantir que o índice está dentro dos limites
+        if (index >= slides.length) {
+            currentSlide = 0;
+        } else if (index < 0) {
+            currentSlide = slides.length - 1;
+        } else {
+            currentSlide = index;
+        }
+        
+        // Remover classe active de todos os slides e indicadores
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Adicionar classe active ao slide e indicador atual
+        slides[currentSlide].classList.add('active');
+        indicators[currentSlide].classList.add('active');
+    }
+    
+    // Próximo slide
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+    
+    // Slide anterior
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+    
+    // Auto-play
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(nextSlide, autoPlayDelay);
+    }
+    
+    function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+    }
+    
+    // Event listeners para botões
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            prevSlide();
+            stopAutoPlay();
+            startAutoPlay(); // Reinicia o auto-play
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            nextSlide();
+            stopAutoPlay();
+            startAutoPlay(); // Reinicia o auto-play
+        });
+    }
+    
+    // Event listeners para indicadores
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', function() {
+            showSlide(index);
+            stopAutoPlay();
+            startAutoPlay(); // Reinicia o auto-play
+        });
+    });
+    
+    // Pausar auto-play ao passar o mouse
+    carouselWrapper.addEventListener('mouseenter', stopAutoPlay);
+    carouselWrapper.addEventListener('mouseleave', startAutoPlay);
+    
+    // Suporte para toque (swipe) em dispositivos móveis
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    carouselWrapper.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+        stopAutoPlay();
+    });
+    
+    carouselWrapper.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+        startAutoPlay();
+    });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50; // Distância mínima para considerar um swipe
+        
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swipe para esquerda - próximo slide
+            nextSlide();
+        }
+        
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Swipe para direita - slide anterior
+            prevSlide();
+        }
+    }
+    
+    // Navegação por teclado
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            prevSlide();
+            stopAutoPlay();
+            startAutoPlay();
+        } else if (e.key === 'ArrowRight') {
+            nextSlide();
+            stopAutoPlay();
+            startAutoPlay();
+        }
+    });
+    
+    // Iniciar auto-play
+    startAutoPlay();
+    
+    // Parar auto-play quando a aba não estiver visível
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stopAutoPlay();
+        } else {
+            startAutoPlay();
+        }
+    });
+});
+
+// ============================================
 console.log('%cSite carregado com sucesso!', 'color: #D4AF37; font-size: 14px;');
 console.log('%cDesenvolvido com HTML5, CSS3 e JavaScript', 'color: #666; font-size: 12px;');
